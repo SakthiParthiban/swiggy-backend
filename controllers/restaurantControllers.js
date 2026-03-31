@@ -1,4 +1,4 @@
-const Restaurant = require('../models/Restaurants');
+const Restaurant = require('../models/Restaurant');
 
 // Get All Restaurants
 const getAllRestaurants = async (req, res) => {
@@ -17,7 +17,7 @@ const createRestaurant = async (req, res) => {
         const { name, rating, location, cuisine } = req.body;
 
         if (!name || !rating || !location || !cuisine) {
-            return res.status(400).json({ message: "All feilds are Require" });
+            return res.status(400).json({ message:"All fields are required" });
         }
         const restaurant = await Restaurant.create({
             name,
