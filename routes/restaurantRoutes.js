@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const { getAllRestaurants,
-    createRestaurant, deleteRestaurant, updateRestaurant, getRestaurantById} = require('../controllers/restaurantControllers');
+    createRestaurant, deleteRestaurant, updateRestaurant, getRestaurantById } =
+    require('../controllers/restaurantControllers');
 
 router.get("/restaurants", getAllRestaurants);
 router.post("/restaurants", createRestaurant);
