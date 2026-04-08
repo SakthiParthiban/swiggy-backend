@@ -2,12 +2,20 @@ const express = require('express');
 const router = express.Router();
 
 const { getAllRestaurants,
-    createRestaurant, deleteRestaurant, updateRestaurant, getRestaurantById } =
-    require('../controllers/restaurantControllers');
+    createRestaurant,
+    deleteRestaurant,
+    updateRestaurant,
+    getRestaurantById } = require('../controllers/restaurantControllers');
 
+const {verifyToken, verifyAdmin} = require('../middleware/authMiddleware');
+
+// public routes 
 router.get("/restaurants", getAllRestaurants);
-router.post("/restaurants", createRestaurant);
-router.delete("/restaurants/:id", deleteRestaurant);
-router.put('/restaurants/:id', updateRestaurant);
 router.get('/restaurants/:id', getRestaurantById);
+
+// protected routes - login + admin
+router.post("/restaurants", verifyToken, verifyAdmin, createRestaurant);
+router.delete("/restaurants/:id", verifyToken, verifyAdmin, deleteRestaurant);
+router.put('/restaurants/:id', verifyToken, verifyAdmin, updateRestaurant);
+
 module.exports = router;
