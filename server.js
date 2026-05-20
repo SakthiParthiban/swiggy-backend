@@ -7,6 +7,7 @@ const helmet = require('helmet');
 
 const restaurantRoutes = require('./routes/restaurantRoutes');
 const authRoutes = require('./routes/authRoutes');
+const{apiLimiter} = require('./middleware/rateLimiter');
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 // Routes
 app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api',apiLimiter);
 
 // 404 handler
 app.use((req, res, next) => {
