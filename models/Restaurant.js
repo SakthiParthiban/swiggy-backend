@@ -19,6 +19,10 @@ cuisine:{
 isOpen:{
     type:Boolean,
     default:true
+},
+image:{
+    type:String,
+    default: ''
 }
 },{timestamps:true});
 module.exports = mongoose.model("Restaurant",restaurantSchema);

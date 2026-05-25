@@ -41,6 +41,8 @@ const getRestaurantById = async (req, res, next) => {
 
 // Create New Restaurant
 const createRestaurant = async (req, res, next) => {
+    console.log('req.file:', req.file)      // ← add this
+    console.log('req.body:', req.body)
     try {
 
         const { name, rating, location, cuisine } = req.body;
@@ -52,12 +54,16 @@ const createRestaurant = async (req, res, next) => {
             return next(err);
         }
 
+        // image url from cloudinary
+        const imageUrl = req.file ? req.file.path : '';
+
         // Create restaurant
         const restaurant = await Restaurant.create({
             name,
             rating,
             location,
-            cuisine
+            cuisine,
+            image:imageUrl
         });
 
         res.status(201).json({

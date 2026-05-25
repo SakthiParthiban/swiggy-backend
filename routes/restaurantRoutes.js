@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const {upload} = require('../config/cloudinary');
 
 const {
     getAllRestaurants,
@@ -19,7 +20,7 @@ router.get('/', getAllRestaurants);
 router.get('/:id', getRestaurantById);
 
 // Protected Routes (Admin Only)
-router.post('/',verifyToken,verifyAdmin,createRestaurant);
+router.post('/',verifyToken,verifyAdmin,upload.single('image'),createRestaurant);
 router.put('/:id',verifyToken,verifyAdmin,updateRestaurant);
 router.delete('/:id',verifyToken,verifyAdmin,deleteRestaurant);
 
