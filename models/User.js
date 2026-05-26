@@ -17,6 +17,13 @@ role:{
     type:String,
     enum:["user","admin"],
     default:"user"
+},
+// OTP feilds
+resendOTP:{
+    type:String
+},
+resendOTPExpire:{
+    type:Date
 }
 },{timestamps:true});
 
