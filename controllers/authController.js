@@ -1,4 +1,6 @@
 const User = require('../models/User.js');
+const sendEmail = require('../config/emailConfig')
+const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -120,5 +122,61 @@ const login = async (req, res, next) => {
         next(err);
     }
 };
+
+// Forget password
+const forgetPassword = async (rq, res, next) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            const error = new error("Email required");
+            error.statusCode = 400;
+            return next(err);
+        }
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            const error = new error("User not found");
+            error.statusCode = 400;
+            return next(err);
+        }
+
+        // generate OTP
+        const otp = crypto.randomInt(100000, 999999).toString();
+        console.log(otp);
+
+        // hash OTP
+        const hashedOTP = crypto
+            .createHash('sha256')
+            .update(otp)
+            .digest('hex');
+
+        // save and reset OTP
+        user.resetOtp = hashedOtp;
+        const resetOtpExpire = Date.now() + 10 * 60 * 1000;
+        await user.save();
+
+        // Email template 
+        const html = `
+        <h2>Password Reset OTP</h2>
+        <p>Your OTP is:<strong>${otp}</strong></p>
+        <p>Valid for 10 minutes only</P>`
+
+        await sendEmail(
+            email,
+            'Password Reset OTP - Swiggy',
+            html
+        );
+
+        res.status(200).json({
+            success: 'true',
+            message: "If account exists, OTP send successfully"
+        });
+    }
+    catch (err) {
+        next(err);
+    }
+}
 
 module.exports = { signup, login };
