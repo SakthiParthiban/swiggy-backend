@@ -19,10 +19,10 @@ role:{
     default:"user"
 },
 // OTP feilds
-resendOTP:{
+resetOTP:{
     type:String
 },
-resendOTPExpire:{
+resetOTPExpire:{
     type:Date
 }
 },{timestamps:true});

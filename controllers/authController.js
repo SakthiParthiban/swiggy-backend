@@ -123,28 +123,29 @@ const login = async (req, res, next) => {
     }
 };
 
-// Forget password
-const forgetPassword = async (rq, res, next) => {
+// Forgot password
+const forgotPassword = async (req, res, next) => {
     try {
         const { email } = req.body;
 
         if (!email) {
-            const error = new error("Email required");
-            error.statusCode = 400;
+            const err = new Error("Email required");
+            err.statusCode = 400;
             return next(err);
         }
 
         const user = await User.findOne({ email });
 
         if (!user) {
-            const error = new error("User not found");
-            error.statusCode = 400;
-            return next(err);
+            return res.status(200).json({
+                success: true,
+                message: "If account exists, OTP sent successfully"
+            });
         }
+
 
         // generate OTP
         const otp = crypto.randomInt(100000, 999999).toString();
-        console.log(otp);
 
         // hash OTP
         const hashedOTP = crypto
@@ -153,24 +154,27 @@ const forgetPassword = async (rq, res, next) => {
             .digest('hex');
 
         // save and reset OTP
-        user.resetOtp = hashedOtp;
-        const resetOtpExpire = Date.now() + 10 * 60 * 1000;
+        user.resetOTP = hashedOTP;
+        user.resetOTPExpire = Date.now() + 10 * 60 * 1000;
         await user.save();
 
         // Email template 
         const html = `
         <h2>Password Reset OTP</h2>
         <p>Your OTP is:<strong>${otp}</strong></p>
-        <p>Valid for 10 minutes only</P>`
-
-        await sendEmail(
-            email,
-            'Password Reset OTP - Swiggy',
-            html
-        );
-
+        <p>Valid for 10 minutes only</p>`
+        try {
+            await sendEmail(
+                email,
+                'Password Reset OTP - Swiggy',
+                html
+            );
+        } catch (emailError) {
+            // Log email error internally, but don't break the client response
+            console.error("Email delivery failed:", emailError);
+        }
         res.status(200).json({
-            success: 'true',
+            success: true,
             message: "If account exists, OTP send successfully"
         });
     }
@@ -179,4 +183,66 @@ const forgetPassword = async (rq, res, next) => {
     }
 }
 
-module.exports = { signup, login };
+// Reset password
+const resetPassword = async (req, res, next) => {
+    try {
+        const { email, otp, newPassword } = req.body;
+
+        if (!email || !otp || !newPassword) {
+            const err = new Error("All feilds are required");
+            err.statusCode = 400;
+            return next(err);
+        }
+
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            const err = new Error("Invalid request");
+            err.statusCode = 400;
+            return next(err);
+        }
+
+        // Hash otp
+        const otpString = String(otp).trim();
+        const hashedOTP = crypto
+            .createHash('sha256')
+            .update(otpString)
+            .digest('hex');
+
+        // verify otp
+        if (user.resetOTP !== hashedOTP) {
+            const err = new Error("Invalid OTP");
+            err.statusCode = 400;
+            return next(err);
+        }
+
+        // check expiration
+        if (user.resetOTPExpire < Date.now()) {
+            const err = new Error("OTP expired");
+            err.statusCode = 400;
+            return next(err);
+        }
+
+        // hashed password
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // update password
+        user.password = hashedPassword;
+
+        // clear OTP
+        user.resetOTP = undefined;
+        user.resetOTPExpire = undefined;
+
+        await user.save();
+
+        res.status(200).json({
+            success: true,
+            message: "Password reset successful"
+        });
+    }
+    catch (err) {
+        next(err);
+    }
+};
+
+module.exports = { signup, login, forgotPassword, resetPassword };
