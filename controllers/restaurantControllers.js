@@ -34,6 +34,13 @@ const getAllRestaurants = async (req, res, next) => {
             }
         }
 
+        // pagination calculation
+        const pageNumber = Number(page);
+        const limitNumber = Number(limit);
+        const skip = (pageNumber -1) * limitNumber;
+
+        
+
     } catch (err) {
         next(err);
     }
