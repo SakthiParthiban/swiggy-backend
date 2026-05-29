@@ -39,7 +39,10 @@ const getAllRestaurants = async (req, res, next) => {
         const limitNumber = Number(limit);
         const skip = (pageNumber -1) * limitNumber;
 
-        
+        // fetch restaurant
+        const restaurants = await Restaurant.find(query)
+        .skip(skip)
+        .limit(limitNumber);
 
     } catch (err) {
         next(err);
