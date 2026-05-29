@@ -4,13 +4,35 @@ const Restaurant = require('../models/Restaurant');
 const getAllRestaurants = async (req, res, next) => {
     try {
 
-        const restaurants = await Restaurant.find();
+        // Query params 
+        const {search,location,cuisine,page=1,limit=5} = req.query;
 
-        res.status(200).json({
-            success: true,
-            count: restaurants.length,
-            data: restaurants
-        });
+        // dynamic query object
+        let query = {};
+
+        // search by restaurant name
+        if(search){
+            query.name = {
+                $regex:search,
+                $options:'i'
+            };
+        }
+
+        // filter by location
+        if(location){
+            query.location={
+                $regex:location,
+                $options:'i'
+            }
+        }
+
+        // filter by cuisine
+        if(cuisine){
+            query.cuisine={
+                $regex:"cuisine",
+                $options:"i"
+            }
+        }
 
     } catch (err) {
         next(err);
