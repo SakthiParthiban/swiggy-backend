@@ -5,44 +5,54 @@ const getAllRestaurants = async (req, res, next) => {
     try {
 
         // Query params 
-        const {search,location,cuisine,page=1,limit=5} = req.query;
+        const { search, location, cuisine, page = 1, limit = 5 } = req.query;
 
         // dynamic query object
         let query = {};
 
         // search by restaurant name
-        if(search){
+        if (search) {
             query.name = {
-                $regex:search,
-                $options:'i'
+                $regex: search,
+                $options: 'i'
             };
         }
 
         // filter by location
-        if(location){
-            query.location={
-                $regex:location,
-                $options:'i'
+        if (location) {
+            query.location = {
+                $regex: location,
+                $options: 'i'
             }
         }
 
         // filter by cuisine
-        if(cuisine){
-            query.cuisine={
-                $regex:"cuisine",
-                $options:"i"
+        if (cuisine) {
+            query.cuisine = {
+                $regex: "cuisine",
+                $options: "i"
             }
         }
 
         // pagination calculation
         const pageNumber = Number(page);
         const limitNumber = Number(limit);
-        const skip = (pageNumber -1) * limitNumber;
+        const skip = (pageNumber - 1) * limitNumber;
 
         // fetch restaurant
         const restaurants = await Restaurant.find(query)
-        .skip(skip)
-        .limit(limitNumber);
+            .skip(skip)
+            .limit(limitNumber);
+
+        // total documents count
+        const totalRestaurants = await Restaurant.countDocuments(query)
+        res.status(200).json({
+            success: true,
+            totalRestaurants,
+            currentPage: pageNumber,
+            totalPages: Math.ceil(totalRestaurants / limitNumber),
+            restaurants
+        });
 
     } catch (err) {
         next(err);
@@ -95,7 +105,7 @@ const createRestaurant = async (req, res, next) => {
             rating,
             location,
             cuisine,
-            image:imageUrl
+            image: imageUrl
         });
 
         res.status(201).json({
