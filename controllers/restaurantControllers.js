@@ -29,7 +29,7 @@ const getAllRestaurants = async (req, res, next) => {
         // filter by cuisine
         if (cuisine) {
             query.cuisine = {
-                $regex: "cuisine",
+                $regex: cuisine,
                 $options: "i"
             }
         }
@@ -83,8 +83,6 @@ const getRestaurantById = async (req, res, next) => {
 
 // Create New Restaurant
 const createRestaurant = async (req, res, next) => {
-    console.log('req.file:', req.file)      // ← add this
-    console.log('req.body:', req.body)
     try {
 
         const { name, rating, location, cuisine } = req.body;

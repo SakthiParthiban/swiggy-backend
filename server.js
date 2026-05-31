@@ -18,10 +18,10 @@ app.use(helmet());
 app.use(express.json());
 
 // Routes
+app.use('/api',apiLimiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/payment', paymentRoutes);
-app.use('/api',apiLimiter);
 
 
 // 404 handler

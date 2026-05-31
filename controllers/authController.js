@@ -33,7 +33,7 @@ const signup = async (req, res, next) => {
             name,
             email,
             password: hashedPassword,
-            role: 'user'
+            role: 'user' // Admin role only via DB — intentional security
         });
 
         // Generate JWT token
@@ -189,7 +189,7 @@ const resetPassword = async (req, res, next) => {
         const { email, otp, newPassword } = req.body;
 
         if (!email || !otp || !newPassword) {
-            const err = new Error("All feilds are required");
+            const err = new Error("All fields are required");
             err.statusCode = 400;
             return next(err);
         }
