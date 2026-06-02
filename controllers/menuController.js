@@ -61,7 +61,7 @@ const getMenuByRestaurant = async (req, res, next) => {
         }
 
         // check the restaurant exists
-        const restaurant = await Restaurant.findById({ restaurantId });
+        const restaurant = await Restaurant.findById(restaurantId);
 
         if (!restaurant) {
             const err = new Error("Restaurant not found");
@@ -189,4 +189,12 @@ const deleteMenuItem = async (req, res, next) => {
     } catch (err) {
         next(err);
     }
+};
+
+module.exports = {
+    createMenuItem,
+    getMenuByRestaurant,
+    getMenuItemById,
+    updateMenuItem,
+    deleteMenuItem
 };
