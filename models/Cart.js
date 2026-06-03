@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-// sub schema
+// Cart item schema - sub schema
 const cartItemSchema = new mongoose.Schema({
     menuId:{
         type:mongoose.Schema.Types.ObjectId,
@@ -15,7 +15,7 @@ const cartItemSchema = new mongoose.Schema({
     }
 },{_id:false});
 
-// main schema
+// Cart schema - main schema
 const cartSchema = new mongoose.Schema({
     userId:{
         type:mongoose.Schema.Types.ObjectId,
@@ -29,7 +29,7 @@ const cartSchema = new mongoose.Schema({
         ref:'Restaurant',
         default:null
     },
-
+    // connect sub schema as array
     items:[cartItemSchema],
     totalAmount:{
         type:Number,
