@@ -11,6 +11,7 @@ const paymentRoutes = require('./routes/paymentRoutes');
 const{apiLimiter} = require('./middleware/rateLimiter');
 const menuRoutes = require('./routes/menuRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const cartRoutes = require('./routes/cartRoutes');
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/menu', menuRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/cart', cartRoutes);
 
 
 // 404 handler
