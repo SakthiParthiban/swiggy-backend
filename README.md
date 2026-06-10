@@ -106,6 +106,13 @@ swiggy-backend/
 | POST | /api/payment/verify | User | Cryptographic signature verification & recording |
 | GET | /api/payment/history | User | View personal payment logs |
 
+### Review Routes
+| Method | Endpoint | Access | Description |
+|--------|----------|--------|-------------|
+| GET | /api/reviews/restaurant/:restaurantId | Public | Fetches all logs for a restaurant |
+| POST | /api/reviews/add | User | Saves feedback (Prevents double entries via indexing) |
+| DELETE | /api/reviews/:id | User | Removes feedback entry (Validates authorship) |
+
 ## ⚙️ Environment Variables
 MONGO_URI=
 PORT=
