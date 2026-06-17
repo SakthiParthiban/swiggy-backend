@@ -15,14 +15,14 @@ const { verifyToken, verifyAdmin } = require('../middleware/authMiddleware');
 // secure all order routes
 router.use(verifyToken);
 
+// admin routes
+router.put('/:id/status', verifyAdmin, updateOrderStatus);
+router.get('/admin/all', verifyAdmin, getAllOrders);
+
 // user routes
 router.post('/', createOrder);
 router.get('/', getMyOrders);
 router.get('/:id', getOrderById);
 router.put('/:id/cancel', cancelOrder);
-
-// admin routes
-router.put('/:id/status', verifyAdmin, updateOrderStatus);
-router.get('/admin/all', verifyAdmin, getAllOrders);
 
 module.exports = router;

@@ -49,6 +49,8 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
+module.exports = app;
+
 // DB + Server start
 mongoose.connect(process.env.MONGO_URI)
     .then(() => {
