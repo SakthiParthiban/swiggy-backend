@@ -21,14 +21,6 @@ app.use(cors());
 app.use(helmet());
 app.use(express.json());
 
-app.get("/", (req, res) => {
-    res.json({
-        success: true,
-        message: "Swiggy Backend API Running 🚀",
-        version: "1.0.0"
-    });
-});
-
 // Routes
 app.use('/api', apiLimiter);
 app.use('/api/auth', authRoutes);
@@ -39,6 +31,13 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/reviews', reviewRoutes);
 
+app.get("/", (req, res) => {
+    res.json({
+        success: true,
+        message: "Swiggy Backend API Running 🚀",
+        version: "1.0.0"
+    });
+});
 
 // 404 handler
 app.use((req, res, next) => {
