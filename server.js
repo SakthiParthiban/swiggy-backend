@@ -8,7 +8,7 @@ const helmet = require('helmet');
 const restaurantRoutes = require('./routes/restaurantRoutes');
 const authRoutes = require('./routes/authRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
-const{apiLimiter} = require('./middleware/rateLimiter');
+const { apiLimiter } = require('./middleware/rateLimiter');
 const menuRoutes = require('./routes/menuRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const cartRoutes = require('./routes/cartRoutes');
@@ -21,8 +21,16 @@ app.use(cors());
 app.use(helmet());
 app.use(express.json());
 
+app.get("/", (req, res) => {
+    res.json({
+        success: true,
+        message: "Swiggy Backend API Running 🚀",
+        version: "1.0.0"
+    });
+});
+
 // Routes
-app.use('/api',apiLimiter);
+app.use('/api', apiLimiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/restaurants', restaurantRoutes);
 app.use('/api/payment', paymentRoutes);
